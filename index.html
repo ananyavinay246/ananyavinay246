@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dice of Destiny & Snake Therapist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+            background-color: #fdf6e3;
+        }
+        button {
+            background-color: #ff6b6b;
+            color: white;
+            font-size: 24px;
+            padding: 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+        button:hover {
+            background-color: #ff4b4b;
+        }
+        p, label {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 60%;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎲 Roll the Dice of Destiny! 🎲</h1>
+    <button onclick="rollDice()">Roll the Dice</button>
+    <p id="diceResult">Click the button to see your destiny!</p>
+
+    <hr>
+
+    <h2>🐍 Snake Therapist</h2>
+    <form id="snakeForm">
+        <label for="userInput">Tell the snake what's on your mind:</label>
+        <br>
+        <input type="text" id="userInput" name="userInput" placeholder="Share your thoughts..." required>
+        <br>
+        <button type="submit">Hisss with the Snake</button>
+    </form>
+    <p id="snakeResponse">The snake awaits your words...</p>
+
+    <script>
+        // Function to handle dice rolling
+        function rollDice() {
+            fetch('/roll')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('diceResult').innerText = `🎲 You rolled a ${data.roll}! ${data.result}`;
+                })
+                .catch(error => {
+                    document.getElementById('diceResult').innerText = "Oops! Something went wrong.";
+                });
+        }
+
+        // Function to handle snake therapist form submission
+        document.getElementById('snakeForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const userInput = document.getElementById('userInput').value;
+
+            fetch('/snake', {
+                method: 'POST',
+                body: new URLSearchParams({'user_input': userInput}),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('snakeResponse').innerText = data.response;
+            })
+            .catch(error => {
+                document.getElementById('snakeResponse').innerText = "Hiss... Something went wrong.";
+            });
+        });
+    </script>
+</body>
+</html>
